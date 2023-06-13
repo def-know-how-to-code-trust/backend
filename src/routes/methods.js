@@ -3,7 +3,6 @@ import fetch from "node-fetch";
 
 // This is not exported, which means only methods exposed in this file will access it.
 const todoList = {};
-const msg = message
 // Option 1 - wrapper for arbitrary messages
 function messageJson(message) {
   return { message };
