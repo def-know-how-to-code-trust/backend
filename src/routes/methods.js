@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 
 // This is not exported, which means only methods exposed in this file will access it.
 const todoList = {};
-
+const msg = message
 // Option 1 - wrapper for arbitrary messages
 function messageJson(message) {
   return { message };
@@ -58,14 +58,17 @@ export async function deleteTodoById(req, res) {
 
 export async function updateTodoById(req, res) {
   const { id } = req.params;
-  const updatedTodo = req.body;
-  if (id !== req.body.id) {
-    return res.status(409).json(ERROR_MSGS.UUID_MISMATCH);
-  } else if (id in todoList) {
-    todoList[id] = { ...todoList[id], ...updatedTodo };
-    return res.status(200).send();
+  const body = req.body;
+  if (id in todoList) {
+    if (!("description" in body)) {
+      return res.status(400).json(ERROR_MSGS.TASK_REQUIRED);
+    }
+    const newTaskDescription = body.description;
+    const todoToUpdate = todoList[id];
+    todoToUpdate.description = newTaskDescription;
+    return res.status(200).json(todoToUpdate);
   } else {
-    return res.status(400).json(messageJson("UUID does not exist"));
+    return res.status(400).json(ERROR_MSGS.NO_SUCH_UUID);
   }
 }
 
